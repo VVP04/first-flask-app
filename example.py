@@ -158,7 +158,7 @@ def users_patch(id):
     user["name"] = name
     user["email"] = email
     repo.save(user)
-    flash("User has been updated", "success")
+    flash("Пользователь успешно обновлён", "success")
     return redirect(url_for("users_index"))
 
 
