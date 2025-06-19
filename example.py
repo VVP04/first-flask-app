@@ -152,7 +152,6 @@ def users_patch(id):
             errors=errors,
         ), 422
 
-    # Ручное копирование данных из формы в нашу сущность
     user["name"] = data["name"]
     user["email"] = data["email"]
     repo.save(user)
