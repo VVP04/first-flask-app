@@ -1,7 +1,7 @@
 import re
 
 
-def validate_user_data(name, email, repo):
+def validate_user_data(name, email, repo, update=False):
     errors = []
     
     # 1. Проверка на пустые поля
@@ -19,7 +19,8 @@ def validate_user_data(name, email, repo):
         errors.append("Email должен быть в формате example@domain.com")
     
     # 4. Проверка уникальности email
-    if email and any(user['email'] == email for user in repo.get_content()):
-        errors.append("Пользователь с таким email уже существует")
+    if not update:
+        if email and any(user['email'] == email for user in repo.get_content()):
+            errors.append("Пользователь с таким email уже существует")
     
     return errors

@@ -142,9 +142,12 @@ def users_edit(id):
 def users_patch(id):
     repo = UserRepository()
     user = repo.find(id)
+    
     data = request.form.to_dict()
-
-    errors = validate_user_data(data)
+    name = data['name']
+    email = data['email']
+    
+    errors = validate_user_data(name, email, repo, update=True)
     if errors:
         return render_template(
             "users/edit.html",
@@ -152,8 +155,8 @@ def users_patch(id):
             errors=errors,
         ), 422
 
-    user["name"] = data["name"]
-    user["email"] = data["email"]
+    user["name"] = name
+    user["email"] = email
     repo.save(user)
     flash("User has been updated", "success")
     return redirect(url_for("users_index"))
