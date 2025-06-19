@@ -1,0 +1,175 @@
+{% extends "users/layout.html" %}
+
+{% block title %}Список пользователей{% endblock %}
+
+{% block content %}
+<div class="users-container">
+    <h1>Список пользователей</h1>
+
+    <form action="{{ url_for('users_index') }}" method="get" class="search-form">
+        <input type="search" 
+               name="query" 
+               value="{{ search }}" 
+               placeholder="Поиск по имени или email"
+               class="search-input">
+        <button type="submit" class="btn btn-search">Найти</button>
+    </form>
+
+    {% if messages %}
+    <div class="flash-messages">
+        {% for category, message in messages %}
+        <div class="flash-{{ category }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if users %}
+    <div class="users-list">
+        {% for user in users %}
+        <div class="user-card">
+            <div class="user-info">
+                <span class="user-name">{{ user.name }}</span>
+                <span class="user-email">{{ user.email }}</span>
+            </div>
+            <a href="{{ url_for('users_show', id=user.id) }}" class="btn btn-view">Подробнее</a>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="no-results">
+        <p>Пользователи не найдены</p>
+    </div>
+    {% endif %}
+
+    <div class="actions">
+        <a href="{{ url_for('users_new') }}" class="btn btn-primary">
+            Создать нового пользователя
+        </a>
+    </div>
+</div>
+
+<style>
+    .users-container {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 20px;
+        background: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    .search-form {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 25px;
+    }
+
+    .search-input {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 16px;
+    }
+
+    .flash-messages {
+        margin-bottom: 20px;
+    }
+
+    .flash-success {
+        color: #155724;
+        background-color: #d4edda;
+        border: 1px solid #c3e6cb;
+        padding: 12px;
+        border-radius: 4px;
+        margin-bottom: 10px;
+    }
+
+    .flash-error {
+        color: #721c24;
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+        padding: 12px;
+        border-radius: 4px;
+        margin-bottom: 10px;
+    }
+
+    .users-list {
+        display: grid;
+        gap: 15px;
+        margin-bottom: 30px;
+    }
+
+    .user-card {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px;
+        background: white;
+        border-radius: 6px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .user-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .user-name {
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 5px;
+    }
+
+    .user-email {
+        color: #666;
+        font-size: 14px;
+    }
+
+    .no-results {
+        text-align: center;
+        padding: 20px;
+        color: #666;
+    }
+
+    .btn {
+        padding: 8px 16px;
+        text-decoration: none;
+        border-radius: 4px;
+        font-size: 14px;
+        cursor: pointer;
+        border: none;
+    }
+
+    .btn-search {
+        background-color: #6c757d;
+        color: white;
+    }
+
+    .btn-view {
+        background-color: #17a2b8;
+        color: white;
+    }
+
+    .btn-primary {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        font-size: 16px;
+    }
+
+    .actions {
+        margin-top: 20px;
+    }
+
+    .btn:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+    }
+</style>
+{% endblock %}

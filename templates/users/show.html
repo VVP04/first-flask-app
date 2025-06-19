@@ -1,0 +1,92 @@
+{% extends "users/layout.html" %}
+
+{% block title %}Просмотр пользователя - {{ user.name }}{% endblock %}
+
+{% block content %}
+<style>
+    .user-view {
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 20px;
+        background: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    h1 {
+        color: #333;
+        margin-bottom: 20px;
+    }
+    
+    .user-details {
+        margin-bottom: 30px;
+    }
+    
+    .detail-row {
+        display: flex;
+        margin-bottom: 15px;
+        font-size: 16px;
+    }
+    
+    .detail-label {
+        font-weight: bold;
+        width: 100px;
+        color: #555;
+    }
+    
+    .detail-value {
+        flex: 1;
+        color: #222;
+    }
+    
+    .user-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        margin-top: 30px;
+    }
+    
+    .btn {
+        padding: 8px 16px;
+        text-decoration: none;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+    
+    .btn-edit {
+        background-color: #4CAF50;
+        color: white;
+    }
+    
+    .btn-back {
+        background-color: #f0f0f0;
+        color: #333;
+        border: 1px solid #ccc;
+    }
+    
+    .btn:hover {
+        opacity: 0.9;
+    }
+</style>
+<div class="user-view">
+    <div class="user-details">
+        <h1>Информация о пользователе</h1>
+        <div class="detail-row">
+            <span class="detail-label">Имя:</span>
+            <span class="detail-value">{{ user.name }}</span>
+        </div>
+        
+        <div class="detail-row">
+            <span class="detail-label">Email:</span>
+            <span class="detail-value">{{ user.email }}</span>
+        </div>
+    </div>
+    <div class="user-actions">
+        <a href="{{ url_for('users_index') }}" class="btn btn-back">
+            Назад
+        </a>
+        <a href="{{ url_for('users_edit', id=user.id) }}" class="btn btn-edit">
+            Редактировать пользователя
+        </a>
+    </div>
+{% endblock %}
