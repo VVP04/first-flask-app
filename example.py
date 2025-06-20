@@ -162,5 +162,13 @@ def users_patch(id):
     return redirect(url_for("users_index"))
 
 
+@app.route("/users/<id>/delete", methods=["POST"])
+def users_delete(id):
+    repo = UserRepository()
+    repo.destroy(id)
+    flash("Пользователь успешно удалён", "success")
+    return redirect(url_for("users_index"))
+
+
 if __name__ == '__main__':
     app.run(debug=True)

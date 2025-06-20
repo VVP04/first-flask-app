@@ -51,11 +51,20 @@
         text-decoration: none;
         border-radius: 4px;
         font-size: 14px;
+        cursor: pointer;
+        transition: all 0.3s ease;
     }
     
     .btn-edit {
         background-color: #4CAF50;
         color: white;
+        border: none;
+    }
+    
+    .btn-delete {
+        background-color: #f44336;
+        color: white;
+        border: none;
     }
     
     .btn-back {
@@ -65,7 +74,12 @@
     }
     
     .btn:hover {
-        opacity: 0.9;
+        opacity: 0.8;
+        transform: translateY(-1px);
+    }
+    
+    .btn-delete:hover {
+        background-color: #d32f2f;
     }
 </style>
 <div class="user-view">
@@ -85,8 +99,16 @@
         <a href="{{ url_for('users_index') }}" class="btn btn-back">
             Назад
         </a>
+         <form action="{{ url_for('users_delete', id=user.id) }}" method="post" 
+              onsubmit="return confirm('Вы уверены, что хотите удалить пользователя {{ user.name }}? Это действие нельзя отменить.');"
+              style="margin: 0;">
+            <button type="submit" class="btn btn-delete">
+                Удалить
+            </button>
+        </form>
         <a href="{{ url_for('users_edit', id=user.id) }}" class="btn btn-edit">
-            Редактировать пользователя
+            Редактировать
         </a>
     </div>
+</div>
 {% endblock %}

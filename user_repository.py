@@ -34,3 +34,18 @@ class UserRepository():
         with open("./users.json", "w") as f:
             json.dump(self.users, f)
         return new_user['id']
+    
+    def destroy(self, id):
+        try:
+            user = self.find(id)
+            if user is None:
+                raise ValueError(f"User with ID {id} not found")
+            
+            self.users.remove(user)
+            
+            with open("./users.json", "w") as f:
+                json.dump(self.users, f)
+            
+        except Exception as e:
+            sys.stderr.write(f"Error deleting user {id}: {str(e)}\n")
+            raise 
