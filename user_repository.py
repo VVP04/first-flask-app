@@ -1,51 +1,42 @@
-import json
-import sys
-import uuid
+import os
+import psycopg2
+from psycopg2.extras import RealDictCursor
 
-class UserRepository():
+class UserRepository:
     def __init__(self):
-        self.users = json.load(open("./users.json", 'r'))
+        self.conn = psycopg2.connect(
+            os.getenv("DATABASE_URL"),
+            cursor_factory=RealDictCursor
+        )
+        self.conn.autocommit = True
 
     def get_content(self):
-        return self.users
+        with self.conn.cursor() as cur:
+            cur.execute("SELECT id, name, email FROM users ORDER BY id;")
+            return cur.fetchall()
 
     def find(self, id):
-        try:
-            for user in self.users:
-                if id == str(user['id']):
-                    return user
-        except KeyError:
-            sys.stderr.write(f'Wrong post id: {id}')
-            raise
+        with self.conn.cursor() as cur:
+            cur.execute("SELECT id, name, email FROM users WHERE id = %s;", (id,))
+            return cur.fetchone()
 
-    def save(self, new_user):
-        # repository should know nothing about validation in outer layer
-        if not (new_user.get('name') and new_user.get('email')):
-            raise Exception(f'Wrong data: {json.loads(new_user)}')
-        # replace already existed user
-        if new_user.get('id'):
-            current_user = self.find(new_user['id'])
-            self.users.remove(current_user)
-            self.users.append(new_user)
-        # or add new
-        else:
-            new_user['id'] = str(uuid.uuid4())
-            self.users.append(new_user)
-        with open("./users.json", "w") as f:
-            json.dump(self.users, f)
-        return new_user['id']
-    
+    def save(self, user_data):
+        with self.conn.cursor() as cur:
+            # Обновление
+            if 'id' in user_data:
+                cur.execute("""
+                    UPDATE users SET name = %s, email = %s WHERE id = %s;
+                """, (user_data['name'], user_data['email'], user_data['id']))
+                return user_data['id']
+            else:
+                # Вставка нового пользователя
+                cur.execute("""
+                    INSERT INTO users (name, email) VALUES (%s, %s) RETURNING id;
+                """, (user_data['name'], user_data['email']))
+                new_id = cur.fetchone()['id']
+                return str(new_id)
+
     def destroy(self, id):
-        try:
-            user = self.find(id)
-            if user is None:
-                raise ValueError(f"User with ID {id} not found")
-            
-            self.users.remove(user)
-            
-            with open("./users.json", "w") as f:
-                json.dump(self.users, f)
-            
-        except Exception as e:
-            sys.stderr.write(f"Error deleting user {id}: {str(e)}\n")
-            raise 
+        with self.conn.cursor() as cur:
+            cur.execute("DELETE FROM users WHERE id = %s;", (id,))
+            return cur.rowcount > 0

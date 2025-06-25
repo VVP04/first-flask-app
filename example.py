@@ -1,9 +1,11 @@
-from flask import Flask, flash, redirect, request, url_for, render_template, make_response, get_flashed_messages
+from flask import Flask, flash, redirect, request, url_for, render_template, make_response, get_flashed_messages, session
 import logging
 from logging.handlers import RotatingFileHandler
 import os
 from user_repository import UserRepository
 from validator import validate_user_data
+from werkzeug.security import check_password_hash
+
 
 app = Flask(__name__)
 app.secret_key = "secret_key"
